@@ -5,6 +5,8 @@ import { toggleFavorite } from '../features/favorites/favoriteSlice';
 import { useState } from 'react';
 import { Rating, Input} from 'react-native-elements';
 import { postComment } from '../features/comments/commentsSlice';
+import * as Animatable from 'react-native-animatable';
+
 
 const CampsiteInfoScreen = ({ route }) => {
     const [showModal, setShowModal] = useState(false);
@@ -48,78 +50,82 @@ const CampsiteInfoScreen = ({ route }) => {
         );
     };
     return (
-        <>
-        <FlatList 
-            data={comments.commentsArray.filter(
-                (comment) => comment.campsiteId === campsite.id
-            )}
-            renderItem={renderCommentItem}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{marginHorizontal: 20, paddingVertical: 20 }}
-            ListHeaderComponent={
-                <>
-                    <RenderCampsite 
-                        campsite={campsite}
-                        isFavorite={favorites.includes(campsite.id)}
-                        markFavorite={() => dispatch(toggleFavorite(campsite.id))}
-                        onShowModal={() => setShowModal(!showModal)}
-                    />
-                    <Text style={styles.commentsTitle}>Comments</Text>
-                </>
-            }
-        />
-        <Modal
-                animationType="slide"
-                transparent={false}
-                visible={showModal}
-                onRequestClose={() => setShowModal(!showModal)}
+        <Animatable.View
+            animation='fadeInUp'
+            duration={2000}
+            delay={1000}
         >
-            <View style={styles.modal}>
-                <Rating
-                    showRating
-                    startingValue={rating}
-                    imageSize={40}
-                    onFinishRating={(rating) => setRating(rating)}
-                    style={{paddingVertical: 10}}
-                ></Rating>
-                <Input
-                    placeholder='Author'
-                    leftIcon='user-o'
-                    leftIconContainerStyle={{paddingRight:10}}
-                    onChangeText={(author) => setAuthor(author)}
-                    value={author}
-                ></Input>
-                <Input
-                    placeholder='Comment'
-                    leftIcon='comment-o'
-                    leftIconContainerStyle={{paddingRight:10}}
-                    onChangeText={(comment) => setText(comment)}
-                    value={text}
-                ></Input>
-                <View style={{margin: 10}}>
-                    <Button
-                        title='Submit'
-                        color='#5637DD'
+            <FlatList 
+                data={comments.commentsArray.filter(
+                    (comment) => comment.campsiteId === campsite.id
+                )}
+                renderItem={renderCommentItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={{marginHorizontal: 20, paddingVertical: 20 }}
+                ListHeaderComponent={
+                    <>
+                        <RenderCampsite 
+                            campsite={campsite}
+                            isFavorite={favorites.includes(campsite.id)}
+                            markFavorite={() => dispatch(toggleFavorite(campsite.id))}
+                            onShowModal={() => setShowModal(!showModal)}
+                        />
+                        <Text style={styles.commentsTitle}>Comments</Text>
+                    </>
+                }
+            />
+            <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={showModal}
+                    onRequestClose={() => setShowModal(!showModal)}
+            >
+                <View style={styles.modal}>
+                    <Rating
+                        showRating
+                        startingValue={rating}
+                        imageSize={40}
+                        onFinishRating={(rating) => setRating(rating)}
+                        style={{paddingVertical: 10}}
+                    ></Rating>
+                    <Input
+                        placeholder='Author'
+                        leftIcon='user-o'
+                        leftIconContainerStyle={{paddingRight:10}}
+                        onChangeText={(author) => setAuthor(author)}
+                        value={author}
+                    ></Input>
+                    <Input
+                        placeholder='Comment'
+                        leftIcon='comment-o'
+                        leftIconContainerStyle={{paddingRight:10}}
+                        onChangeText={(comment) => setText(comment)}
+                        value={text}
+                    ></Input>
+                    <View style={{margin: 10}}>
+                        <Button
+                            title='Submit'
+                            color='#5637DD'
+                            onPress={() => {
+                                handleSubmit();
+                                resetForm();
+                            }}
+                        ></Button>
+                    </View>
+                    <View style={{margin: 10}}>
+                        <Button 
                         onPress={() => {
-                            handleSubmit();
+                            setShowModal(!showModal);
                             resetForm();
                         }}
-                    ></Button>
+                        color='#808080'
+                        title='Cancel'
+                        >
+                        </Button>
+                    </View>
                 </View>
-                <View style={{margin: 10}}>
-                    <Button 
-                    onPress={() => {
-                        setShowModal(!showModal);
-                        resetForm();
-                    }}
-                    color='#808080'
-                    title='Cancel'
-                    >
-                    </Button>
-                </View>
-            </View>
-        </Modal>
-        </>
+            </Modal>
+        </Animatable.View>
     );
 };
 
