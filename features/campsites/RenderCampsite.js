@@ -3,9 +3,12 @@ import { Text, View, StyleSheet, PanResponder, Alert } from "react-native";
 import { Card, Icon } from "react-native-elements";
 import { baseUrl } from "../../shared/baseUrl";
 import * as Animatable from 'react-native-animatable'
+import CampsiteInfoScreen from "../../screens/CampsiteInfoScreen";
 
 const RenderCampsite = (props) => {
     const { campsite } = props;
+
+    const isRightSwipe = ({ dx }) => dx > 200;
 
     const view = useRef();
 
@@ -36,7 +39,10 @@ const RenderCampsite = (props) => {
                 ],
                 { cancelable: false }
                 );
-            };
+            } else if (isRightSwipe(gestureState)) {
+                console.log('Swiped right')
+                props.onShowModal()
+            }
         }
     });
 
